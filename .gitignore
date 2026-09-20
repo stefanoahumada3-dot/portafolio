@@ -11,3 +11,6 @@ __pycache__/
 # Archivos de herramientas y personales que no son parte del proyecto
 .playwright-mcp/
 metallica_ig_post.png
+
+# Notas personales de trabajo (no van al repositorio público)
+PROGRESO.md
