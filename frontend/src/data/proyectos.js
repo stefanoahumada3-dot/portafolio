@@ -25,4 +25,28 @@ export const proyectos = [
     tecnologias: ['React', 'Tailwind CSS'],
     enlace: '#/barberia',
   },
+  {
+    id: 4,
+    titulo: 'Asistente de soporte con IA',
+    descripcion:
+      'Demo simulada de un asistente que entiende mensajes libres, detecta la intención del cliente, pide los datos que faltan y deriva a una persona cuando no sabe.',
+    tecnologias: ['IA conversacional', 'React', 'Tailwind CSS'],
+    enlace: '#/soporte-ia',
+  },
+  {
+    id: 5,
+    titulo: 'Tienda online con carrito',
+    descripcion:
+      'Catálogo con búsqueda, filtros y orden, carrito que recuerda tus productos y cálculo de envío en soles. Hecho solo con React.',
+    tecnologias: ['React', 'Tailwind CSS', 'JavaScript'],
+    enlace: '#/tienda',
+  },
+  {
+    id: 6,
+    titulo: 'Panel de ventas',
+    descripcion:
+      'Indicadores, gráficos dibujados en SVG y tablas con datos ficticios por periodo: 7 días, 30 días y 12 meses.',
+    tecnologias: ['React', 'SVG', 'JavaScript'],
+    enlace: '#/dashboard',
+  },
 ]
