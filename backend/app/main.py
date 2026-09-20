@@ -29,16 +29,37 @@ PROYECTOS_INICIALES = [
         "tecnologias": ["React", "Tailwind CSS"],
         "enlace": "#/barberia",
     },
+    {
+        "titulo": "Asistente de soporte con IA",
+        "descripcion": "Demo simulada de un asistente que entiende mensajes libres, detecta la intención del cliente, pide los datos que faltan y deriva a una persona cuando no sabe.",
+        "tecnologias": ["IA conversacional", "React", "Tailwind CSS"],
+        "enlace": "#/soporte-ia",
+    },
+    {
+        "titulo": "Tienda online con carrito",
+        "descripcion": "Catálogo con búsqueda, filtros y orden, carrito que recuerda tus productos y cálculo de envío en soles. Hecho solo con React.",
+        "tecnologias": ["React", "Tailwind CSS", "JavaScript"],
+        "enlace": "#/tienda",
+    },
+    {
+        "titulo": "Panel de ventas",
+        "descripcion": "Indicadores, gráficos dibujados en SVG y tablas con datos ficticios por periodo: 7 días, 30 días y 12 meses.",
+        "tecnologias": ["React", "SVG", "JavaScript"],
+        "enlace": "#/dashboard",
+    },
 ]
 
 
-# Se ejecuta una vez al encender la API: crea las tablas si no existen y carga los 3 proyectos si la tabla está vacía.
+# Se ejecuta una vez al encender la API: crea las tablas si no existen y agrega los proyectos que aún no estén
+# (se comparan por título, así que si ya existen no se duplican ni se pisan).
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     Base.metadata.create_all(engine)
     with SessionLocal() as db:
-        if db.scalar(select(models.Proyecto.id).limit(1)) is None:
-            db.add_all(models.Proyecto(**{"enlace": "", **p}) for p in PROYECTOS_INICIALES)
+        existentes = set(db.scalars(select(models.Proyecto.titulo)))
+        nuevos = [p for p in PROYECTOS_INICIALES if p["titulo"] not in existentes]
+        if nuevos:
+            db.add_all(models.Proyecto(**{"enlace": "", **p}) for p in nuevos)
             db.commit()
     yield
 

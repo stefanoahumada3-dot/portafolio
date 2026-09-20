@@ -21,6 +21,23 @@ const motivos = [
   ['03', 'Detalles de antes', 'Toalla caliente, navaja y productos que huelen a barbería de verdad.'],
 ]
 
+// Fotos de la galería (Unsplash, licencia libre). Los créditos salen en el pie de la página.
+const fotos = [
+  { src: '/img/barberia/navaja.jpg', w: 900, h: 1348, posicion: 'object-[50%_45%]', pie: 'Navaja y perfilado',
+    alt: 'Barbero perfilando la nuca de un cliente con una navaja recta' },
+  { src: '/img/barberia/corte.jpg', w: 1200, h: 1500, posicion: 'object-[55%_40%]', pie: 'Corte a tijera',
+    alt: 'Barbero cortando el cabello de un cliente con tijera y peine' },
+  { src: '/img/barberia/herramientas.jpg', w: 1200, h: 800, posicion: 'object-[45%_50%]', pie: 'Herramientas de siempre',
+    alt: 'Tijeras, peine, máquinas y productos de barbería sobre una tabla de pizarra' },
+]
+
+const creditosFotos = [
+  ['André Reis', 'https://unsplash.com/@andrereispt'],
+  ['Agustin Fernandez', 'https://unsplash.com/@agustinfernandez'],
+  ['Andrea Donato', 'https://unsplash.com/@andreadonato'],
+  ['Nate Johnston', 'https://unsplash.com/@natejohnston'],
+]
+
 const horarios = [
   ['Lunes a viernes', '9:00 – 20:00'],
   ['Sábado', '9:00 – 18:00'],
@@ -142,8 +159,16 @@ export default function Barberia() {
             </button>
           </div>
         </div>
-        <div className="entrada flex aspect-[4/5] items-center justify-center overflow-hidden rounded-[25px] bg-soft-grey p-8" style={{ '--d': '0.4s' }}>
-          <PosteBarbero />
+        <div className="entrada aspect-[4/5] overflow-hidden rounded-[25px] bg-soft-grey" style={{ '--d': '0.4s' }}>
+          {/* La foto es horizontal: object-cover la recorta para llenar el marco y object-position la centra en la silla */}
+          <img
+            src="/img/barberia/silla-roja.jpg"
+            alt="Silla de barbero de cuero rojo y blanco en un local con paredes de madera y cuadros"
+            width="1200"
+            height="830"
+            fetchPriority="high"
+            className="h-full w-full object-cover object-[58%_50%]"
+          />
         </div>
       </section>
 
@@ -162,12 +187,39 @@ export default function Barberia() {
         </div>
       </section>
 
+      {/* Galería */}
+      <section id="galeria" className="mx-auto max-w-[1200px] scroll-mt-4 px-6 py-16 md:py-24">
+        <EtiquetaSeccion texto="El oficio" />
+        <div className="mt-10 grid gap-5 md:grid-cols-3">
+          {fotos.map((f, i) => (
+            <figure key={f.src} className={`aparece ${i === 1 ? 'md:mt-14' : ''}`}>
+              <div className="aspect-[4/5] overflow-hidden rounded-[25px] bg-soft-grey">
+                <img
+                  src={f.src}
+                  alt={f.alt}
+                  width={f.w}
+                  height={f.h}
+                  loading="lazy"
+                  className={`h-full w-full object-cover ${f.posicion}`}
+                />
+              </div>
+              <figcaption className="mt-3 text-xs tracking-[0.06em] text-brick-deep uppercase">{f.pie}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
+
       {/* Por qué nosotros */}
       <section id="nosotros" className="mx-auto max-w-[1200px] scroll-mt-4 px-6 py-16 md:py-24">
         <EtiquetaSeccion texto="Por qué Carmín" />
-        <h2 className="font-editorial aparece mt-10 max-w-3xl text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] font-light text-brick-red">
+        <div className="mt-10 flex items-center justify-between gap-10">
+        <h2 className="font-editorial aparece max-w-3xl text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] font-light text-brick-red">
           Una barbería que se toma su tiempo, para que tú no pierdas el tuyo.
         </h2>
+        <div className="hidden h-[300px] shrink-0 md:block">
+          <PosteBarbero />
+        </div>
+        </div>
         <div className="mt-14 grid gap-10 md:grid-cols-3">
           {motivos.map(([num, titulo, texto]) => (
             <div key={num} className="aparece border-t border-brick-red pt-5">
@@ -217,6 +269,16 @@ export default function Barberia() {
           <p className="font-editorial text-4xl font-light">Carmín Barbería</p>
           <div className="text-sm text-white/60">
             <p>Página de ejemplo creada por Stefano Ahumada. Negocio ficticio.</p>
+            <p className="mt-1">
+              Fotos en{' '}
+              <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer" className="text-white hover:underline">Unsplash</a>
+              : {creditosFotos.map(([nombre, url], i) => (
+                <span key={nombre}>
+                  <a href={url} target="_blank" rel="noopener noreferrer" className="text-white hover:underline">{nombre}</a>
+                  {i < creditosFotos.length - 1 ? ', ' : '.'}
+                </span>
+              ))}
+            </p>
             <a href="#proyectos" className="mt-2 inline-block text-white hover:underline">← Volver al portafolio</a>
           </div>
         </div>

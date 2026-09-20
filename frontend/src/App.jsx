@@ -1,10 +1,27 @@
-import { useEffect, useState } from 'react'
-import Admin from './Admin'
-import Gestor from './Gestor'
-import Barberia from './Barberia'
-import Chatbot from './Chatbot'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { proyectos as proyectosLocales } from './data/proyectos'
 import { CONTACTO, HAY_BACKEND, RUTAS_CON_BACKEND } from './config'
+
+// Cada pantalla de demo se carga solo cuando alguien la abre (lazy). Así la página principal pesa menos.
+const rutas = {
+  '#/chatbot': { Pantalla: lazy(() => import('./Chatbot')) },
+  '#/soporte-ia': { Pantalla: lazy(() => import('./SoporteIA')) },
+  '#/tienda': { Pantalla: lazy(() => import('./Tienda')) },
+  '#/dashboard': { Pantalla: lazy(() => import('./Dashboard')) },
+  // La landing de la barbería tiene su propio diseño (claro): va sin el fondo oscuro del portafolio.
+  '#/barberia': { Pantalla: lazy(() => import('./Barberia')), fondoPropio: true },
+  // Estas dos necesitan el backend. Se consulta import.meta.env.DEV aquí mismo (y no HAY_BACKEND de config.js)
+  // para que, al compilar la versión publicada, Vite las elimine por completo y sus archivos ni se generen.
+  // Cuando publiques el backend, cambia DEV por true.
+  ...(import.meta.env.DEV && {
+    '#/gestor': { Pantalla: lazy(() => import('./Gestor')) },
+    '#/admin': { Pantalla: lazy(() => import('./Admin')) },
+  }),
+}
+
+function Cargando() {
+  return <p className="py-24 text-center text-sm text-fog-veil">Cargando…</p>
+}
 
 // Un "componente" en React es una función que devuelve HTML (llamado JSX).
 // Las clases como "text-xl" son de Tailwind. Las clases "vidrio", "boton-vidrio", "etiqueta",
@@ -186,7 +203,7 @@ function Contacto() {
 
 export default function App() {
   // Rutas mínimas sin librerías: según lo que haya después del "#" en la dirección, mostramos una pantalla u otra.
-  //   #/admin -> panel privado     #/gestor -> gestor de tareas     cualquier otra cosa -> portafolio
+  //   #/chatbot, #/tienda, #/dashboard... -> una demo (ver "rutas" arriba)     cualquier otra cosa -> portafolio
   const [ruta, setRuta] = useState(window.location.hash)
   useEffect(() => {
     const alCambiar = () => setRuta(window.location.hash)
@@ -199,15 +216,29 @@ export default function App() {
     if (ruta.startsWith('#/')) window.scrollTo(0, 0)
   }, [ruta])
 
-  // La landing de la barbería tiene su propio diseño (claro), así que va sin el fondo oscuro del portafolio.
-  if (ruta === '#/barberia') return <Barberia />
+  const actual = rutas[ruta] // undefined si la dirección no es una pantalla de demo -> se muestra el portafolio
+  const Pantalla = actual?.Pantalla
+
+  if (actual?.fondoPropio) {
+    return (
+      <Suspense fallback={<Cargando />}>
+        <Pantalla />
+      </Suspense>
+    )
+  }
 
   return (
     <div className="min-h-screen">
       <div className="fondo-halo" />
       <div className="fondo-cuadricula" />
       <Estrellas />
-      {HAY_BACKEND && ruta === '#/admin' ? <Admin /> : HAY_BACKEND && ruta === '#/gestor' ? <Gestor /> : ruta === '#/chatbot' ? <Chatbot /> : <Portafolio />}
+      {Pantalla ? (
+        <Suspense fallback={<Cargando />}>
+          <Pantalla />
+        </Suspense>
+      ) : (
+        <Portafolio />
+      )}
     </div>
   )
 }
