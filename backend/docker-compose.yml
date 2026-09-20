@@ -1,0 +1,13 @@
+﻿# PostgreSQL 18 corriendo en Docker. Los datos se guardan en el volumen "datos_pg", así que no se pierden al apagarlo.
+# Uso:  docker compose up -d   (encender)   |   docker compose down   (apagar)
+services:
+  db:
+    image: postgres:18
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - datos_pg:/var/lib/postgresql
+volumes:
+  datos_pg:

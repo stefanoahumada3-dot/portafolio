@@ -1,0 +1,13 @@
+# Dependencias y compilados
+node_modules/
+dist/
+.venv/
+__pycache__/
+
+# Secretos: NUNCA se suben (la plantilla .env.example sí)
+.env
+!.env.example
+
+# Archivos de herramientas y personales que no son parte del proyecto
+.playwright-mcp/
+metallica_ig_post.png
